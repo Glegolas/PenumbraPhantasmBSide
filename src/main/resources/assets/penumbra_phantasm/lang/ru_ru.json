@@ -440,6 +440,7 @@
 
   "screen.penumbra_phantasm.intro.skip_notification": "НАЖМИ [ESC] ДЛЯ ПРОПУСКА СО СЛУЧАЙНЫМ ВЫБОРОМ.",
   "screen.penumbra_phantasm.intro.skip_notification_post": "НАЖМИ [ESC] ЧТОБЫ ПРОПУСТИТЬ СО СВОИМ ВЫБОРОМ.",
+  "screen.penumbra_phantasm.intro.skip_to_choice": "Нажмите [X], чтобы перейти к выбору души.",
   "screen.penumbra_phantasm.intro.line.1": "     В Ы",
   "screen.penumbra_phantasm.intro.line.2": "З Д Е С Ь ?",
   "screen.penumbra_phantasm.intro.line.3": "       М Ы",

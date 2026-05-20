@@ -1,5 +1,6 @@
 package destiny.penumbra_phantasm.client.render.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -31,12 +32,23 @@ import java.util.List;
 import java.util.Random;
 
 public class IntroScreen extends Screen {
+
+    // B-SIDE: Skipping
+    // private final int TICK_SKIP_AMOUNT = 5;
+
+    // B-SIDE: Tick Flags (tick numbers that initiate events)
+    private final int TICK_FLAG_INTRO_APPEARANCE_1 = 320; // 16 * 20
+    private final int TICK_FLAG_INTRO_DRONE        = 720; // 36 * 20
+    private final int TICK_FLAG_INTRO_APPEARANCE_2 = 860; // 43 * 20
+
+
     private static final int WORLD_THUMBNAIL_DELAY_TICKS = 20;
     private static final float REFERENCE_GUI_SCALE = 2.0f;
     private static Path worldThumbnailPath;
     private static int worldThumbnailTicksRemaining;
 
     Minecraft minecraft = Minecraft.getInstance();
+    private final long window = minecraft.getWindow().getWindow(); // B-SIDE
     public static final ResourceLocation BLACK_SCREEN = new ResourceLocation(PenumbraPhantasm.MODID, "textures/misc/black_screen.png");
     public static final ResourceLocation WHITE_SCREEN = new ResourceLocation(PenumbraPhantasm.MODID, "textures/misc/white_screen.png");
     public static final ResourceLocation IMAGE_DEPTH = new ResourceLocation(PenumbraPhantasm.MODID, "textures/misc/image_depth_blue_alt.png");
@@ -161,7 +173,7 @@ public class IntroScreen extends Screen {
     @Override
     protected void init() {
         minecraft.getSoundManager().stop();
-        GLFW.glfwSetInputMode(minecraft.getWindow().getWindow(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
+        GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
         activeDepths.add(0f);
         activeDepths.add(depthsSpacing);
         activeDepths.add(depthsSpacing * 2f);
@@ -174,11 +186,11 @@ public class IntroScreen extends Screen {
         if (shouldClose) {
             this.closeScreen();
         } else {
-            if (tick == 16 * 20 || tick == 43 * 20) {
+            if (tick == TICK_FLAG_INTRO_APPEARANCE_1 || tick == TICK_FLAG_INTRO_APPEARANCE_2) {
                 minecraft.player.playSound(SoundRegistry.INTRO_APPEARANCE.get(), 0.5f, 1);
             }
 
-            if (tick < depthsStart && tick < 36 * 20) {
+            if (tick < depthsStart && tick < TICK_FLAG_INTRO_DRONE) {
                 if (tick % droneLength == 0 || tick == 0) {
                     minecraft.player.playSound(SoundRegistry.INTRO_DRONE.get(), 0.5f, 1);
                 }
@@ -207,6 +219,7 @@ public class IntroScreen extends Screen {
                     float current = activeDepths.get(i);
                     float next = current + 1f;
                     activeDepths.set(i, next);
+                    System.out.println("Active Depth: " + i);
                     if (next >= depthsLifetime) {
                         toRemove.add(next);
                     }
@@ -221,6 +234,55 @@ public class IntroScreen extends Screen {
                 isChoosing = true;
             }
             if (!isChoosing) {
+
+                // B-SIDE: Intro skip implementation
+                // Hacky skip method that will wait for each tick flag to input correctly to prevent skips.
+                /* if (InputConstants.isKeyDown(window, GLFW.GLFW_KEY_X)) {
+                    int tick_skip = tick + TICK_SKIP_AMOUNT-1;
+                    if (tick < TICK_FLAG_INTRO_APPEARANCE_1) {
+                        if (tick_skip > TICK_FLAG_INTRO_APPEARANCE_1) {
+                            int dif = tick_skip-TICK_FLAG_INTRO_APPEARANCE_1; // We want to add the same skip amount to tickText too, so we get the difference from the current tick to the future tick and apply it to textTick to compensate.
+                            tick = TICK_FLAG_INTRO_APPEARANCE_1;
+                            tickText += dif;
+                        } else {
+                            tick = tick_skip;
+                            tickText += TICK_SKIP_AMOUNT;
+                        }
+                    } else if (tick < TICK_FLAG_INTRO_DRONE) {
+                        if (tick_skip > TICK_FLAG_INTRO_DRONE) {
+                            int dif = tick_skip-TICK_FLAG_INTRO_DRONE; // We want to add the same skip amount to tickText too, so we get the difference from the current tick to the future tick and apply it to textTick to compensate.
+                            tick = TICK_FLAG_INTRO_DRONE;
+                            tickText += dif;
+                        } else {
+                            tick = tick_skip;
+                            tickText += TICK_SKIP_AMOUNT;
+                        }
+                    } else if (tick < TICK_FLAG_INTRO_APPEARANCE_2) {
+                        if (tick_skip > TICK_FLAG_INTRO_APPEARANCE_2) {
+                            int dif = tick_skip-TICK_FLAG_INTRO_APPEARANCE_2; // We want to add the same skip amount to tickText too, so we get the difference from the current tick to the future tick and apply it to textTick to compensate.
+                            tick = TICK_FLAG_INTRO_APPEARANCE_2;
+                            tickText += dif;
+                        } else {
+                            tick = tick_skip;
+                            tickText += TICK_SKIP_AMOUNT;
+                        }
+                    } 
+                } else {
+                    tickText++;
+                } */
+
+                // B-SIDE: Skip to choice screen.
+                if (InputConstants.isKeyDown(window, GLFW.GLFW_KEY_X) && tick < choiceStart) {
+
+                    minecraft.getSoundManager().stop();
+
+                    // Start up depths music track. 
+                    minecraft.player.playSound(SoundRegistry.INTRO_ANOTHER_HIM_LOOP.get(), 0.5f, 1);
+
+                    tick     = choiceStart-1; // Difference accounts for the constant addition to this value
+                    tickText = choiceStart-1; // Difference accounts for the constant addition to this value
+                }
+
                 tickText++;
             }
 
@@ -230,7 +292,7 @@ public class IntroScreen extends Screen {
                 outlineTick++;
             }
 
-            if (tickText >= 96 * 20) {
+            if (tickText >= 1920) {
                 shouldClose = true;
             }
 
@@ -266,8 +328,12 @@ public class IntroScreen extends Screen {
         if (tick > 55 * 20) {
             drawStringOutlined(graphics, Component.translatable("screen.penumbra_phantasm.intro.skip_notification_post"),
                     2, skipTextY, 0x3e3e3e, 1f, outlineAlpha);
-        } else {
-            drawStringOutlined(graphics, Component.translatable("screen.penumbra_phantasm.intro.skip_notification"),
+        }
+        if (tick > 110 && tick < 210) {
+            // drawStringOutlined(graphics, Component.translatable("screen.penumbra_phantasm.intro.skip_notification"),
+            //        2, skipTextY, 0x3e3e3e, 1f, outlineAlpha);
+            // B-SIDE: Skip to choice screen prompt.
+            drawStringOutlined(graphics, Component.translatable("screen.penumbra_phantasm.intro.skip_to_choice"),
                     2, skipTextY, 0x3e3e3e, 1f, outlineAlpha);
         }
         pose.popPose();

@@ -441,6 +441,7 @@
 
   "screen.penumbra_phantasm.intro.skip_notification": "PRESS [ESC] TO SKIP WITH A RANDOM CHOICE.",
   "screen.penumbra_phantasm.intro.skip_notification_post": "PRESS [ESC] TO SKIP WITH YOUR CHOICE.",
+  "screen.penumbra_phantasm.intro.skip_to_choice": "PRESS [X] TO SKIP TO SOUL SELECTION.",
   "screen.penumbra_phantasm.intro.line.1": "A R E    Y O U",
   "screen.penumbra_phantasm.intro.line.2": "T H E R E ?",
   "screen.penumbra_phantasm.intro.line.3": "A R E   W E",
