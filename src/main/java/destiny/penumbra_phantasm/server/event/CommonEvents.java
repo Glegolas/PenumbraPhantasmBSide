@@ -246,8 +246,21 @@ public class CommonEvents {
 
     @SubscribeEvent
     public void playerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            ChangedDimensionContainsTrigger.INSTANCE.trigger(serverPlayer, event.getFrom(), event.getTo());
+        Entity ent = event.getEntity();
+        ResourceKey<Level> from = event.getFrom();
+        ResourceKey<Level> to   = event.getTo();
+        if (ent instanceof ServerPlayer serverPlayer) {
+            ChangedDimensionContainsTrigger.INSTANCE.trigger(serverPlayer, from, to);
+        }
+
+        // B-SIDE: Handle item transitioning between dark world and light world.
+        Boolean from_is_not_darkworld = from == ServerLevel.OVERWORLD || from == ServerLevel.NETHER || from == ServerLevel.END;
+        Boolean to_is_not_darkworld   = to == ServerLevel.OVERWORLD || to == ServerLevel.NETHER || to == ServerLevel.END;
+
+        if (from_is_not_darkworld && !to_is_not_darkworld) { // Other realm to dark world.
+            DarkWorldUtil.transitionLightWorldItemsToDarkWorldItems(ent);
+        } else if (!from_is_not_darkworld && to_is_not_darkworld) { // Dark world to other realm.
+            DarkWorldUtil.transitionDarkWorldItemsToLightWorldItems(ent);
         }
     }
 

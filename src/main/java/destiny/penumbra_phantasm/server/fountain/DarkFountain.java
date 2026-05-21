@@ -962,8 +962,7 @@ public class DarkFountain {
     public void teleportPlayer(ServerPlayer player, ServerLevel destinationLevel, Vec3 targetPos, float yRot, float xRot) {
         player.teleportTo(destinationLevel, targetPos.x, targetPos.y, targetPos.z, yRot, xRot);
         player.connection.send(new ClientboundSetEntityMotionPacket(player));
-
-        PacketHandlerRegistry.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new ClientBoundTransportTickerPacket(0f));
+        PacketHandlerRegistry.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new ClientBoundTransportTickerPacket(0f));            
     }
 
     public void playWind() {

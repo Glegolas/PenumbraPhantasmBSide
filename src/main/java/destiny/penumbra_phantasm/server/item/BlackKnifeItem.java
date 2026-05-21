@@ -2,6 +2,7 @@ package destiny.penumbra_phantasm.server.item;
 
 import destiny.penumbra_phantasm.client.render.item.BlackKnifeItemRenderer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import software.bernie.geckolib.animatable.GeoItem;

@@ -80,7 +80,7 @@ public class PenumbraPhantasm {
         FluidTypeRegistry.FLUID_TYPES.register(modEventBus);
         CreativeTabRegistry.DEF_REG.register(modEventBus);
         BlockEntityRegistry.BLOCK_ENTITIES.register(modEventBus);
-        EffectRegistry.DEF_REG.register(modEventBus);
+        EffectRegistry.EFFECTS.register(modEventBus);
         ParticleTypeRegistry.PARTICLE_TYPES.register(modEventBus);
         FeatureRegistry.FOLIAGES.register(modEventBus);
         FeatureRegistry.TRUNKS.register(modEventBus);

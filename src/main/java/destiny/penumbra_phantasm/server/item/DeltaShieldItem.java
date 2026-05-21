@@ -2,7 +2,10 @@ package destiny.penumbra_phantasm.server.item;
 
 import destiny.penumbra_phantasm.client.render.item.DeltaShieldRenderer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.function.Consumer;
@@ -24,6 +27,4 @@ public class DeltaShieldItem extends ShieldItem {
             }
         });
     }
-
-
 }

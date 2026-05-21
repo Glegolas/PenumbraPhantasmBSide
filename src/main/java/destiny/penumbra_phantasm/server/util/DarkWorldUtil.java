@@ -1,5 +1,6 @@
 package destiny.penumbra_phantasm.server.util;
 
+import java.util.HashMap;
 import commoble.infiniverse.api.InfiniverseAPI;
 import destiny.penumbra_phantasm.PenumbraPhantasm;
 import destiny.penumbra_phantasm.ServerConfig;
@@ -10,9 +11,15 @@ import destiny.penumbra_phantasm.server.datapack.DarkWorldType;
 import destiny.penumbra_phantasm.server.fountain.DarkFountain;
 import destiny.penumbra_phantasm.server.fountain.DarkRoom;
 import destiny.penumbra_phantasm.server.fountain.GreatDoor;
+import destiny.penumbra_phantasm.server.item.DeltaShieldItem;
 import destiny.penumbra_phantasm.server.registry.BlockRegistry;
 import destiny.penumbra_phantasm.server.registry.CapabilityRegistry;
+import destiny.penumbra_phantasm.server.registry.ItemRegistry;
 import destiny.penumbra_phantasm.server.worldgen.SeededNoiseBasedChunkGenerator;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -26,6 +33,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
@@ -59,6 +69,17 @@ import java.util.UUID;
 
 public class DarkWorldUtil
 {
+	// B-SIDE: Item Transition mappings.
+	private static HashMap<Item, Item> DARK_WORLD_ITEMS_TO_LIGHT_WORLD_ITEMS = new HashMap<Item, Item>() {{
+		// DARK CANDY -> SUGAR
+		put(ItemRegistry.DARK_CANDY.get(), Items.SUGAR);
+	}};
+
+	private static HashMap<Item, Item> LIGHT_WORLD_ITEMS_TO_DARK_WORLD_ITEMS = new HashMap<Item, Item>() {{
+		// SUGAR -> DARK CANDY
+		put(Items.SUGAR, ItemRegistry.DARK_CANDY.get());
+	}};
+
 	public record GreatDoorStructureResult(BlockPos anchorPos, Direction facing) {}
 
 	public static BlockPos getDoubleDoorPartnerLower(Level level, BlockPos lowerDoorFoot) {
@@ -672,6 +693,32 @@ public class DarkWorldUtil
 		}
 
 		return darkWorlds;
+	}
+
+	public static void transitionDarkWorldItemsToLightWorldItems(Entity entity) {
+		if (entity instanceof Player player) {
+			Inventory inv = player.getInventory();
+			for (int i = 0; i < inv.items.size(); i++) {
+				ItemStack itemstack = inv.getItem(i);
+				Item item = itemstack.getItem();
+				if (DARK_WORLD_ITEMS_TO_LIGHT_WORLD_ITEMS.containsKey(item)) {
+					inv.setItem(i, new ItemStack(DARK_WORLD_ITEMS_TO_LIGHT_WORLD_ITEMS.get(item), itemstack.getCount()));
+				}
+			}
+		}
+	}
+
+	public static void transitionLightWorldItemsToDarkWorldItems(Entity entity) {
+		if (entity instanceof Player player) {
+			Inventory inv = player.getInventory();
+			for (int i = 0; i < inv.items.size(); i++) {
+				ItemStack itemstack = inv.getItem(i);
+				Item item = itemstack.getItem();
+				if (LIGHT_WORLD_ITEMS_TO_DARK_WORLD_ITEMS.containsKey(item)) {
+					inv.setItem(i, new ItemStack(LIGHT_WORLD_ITEMS_TO_DARK_WORLD_ITEMS.get(item), itemstack.getCount()));
+				}
+			}
+		}
 	}
 
 }

@@ -279,8 +279,10 @@ public class IntroScreen extends Screen {
                     // Start up depths music track. 
                     minecraft.player.playSound(SoundRegistry.INTRO_ANOTHER_HIM_LOOP.get(), 0.5f, 1);
 
-                    tick     = choiceStart-1; // Difference accounts for the constant addition to this value
-                    tickText = choiceStart-1; // Difference accounts for the constant addition to this value
+                    tick     = choiceStart; // Difference accounts for the constant addition to this value
+                    tickText = choiceStart; // Difference accounts for the constant addition to this value
+
+                    return;
                 }
 
                 tickText++;
@@ -328,8 +330,7 @@ public class IntroScreen extends Screen {
         if (tick > 55 * 20) {
             drawStringOutlined(graphics, Component.translatable("screen.penumbra_phantasm.intro.skip_notification_post"),
                     2, skipTextY, 0x3e3e3e, 1f, outlineAlpha);
-        }
-        if (tick > 110 && tick < 210) {
+        } else {
             // drawStringOutlined(graphics, Component.translatable("screen.penumbra_phantasm.intro.skip_notification"),
             //        2, skipTextY, 0x3e3e3e, 1f, outlineAlpha);
             // B-SIDE: Skip to choice screen prompt.

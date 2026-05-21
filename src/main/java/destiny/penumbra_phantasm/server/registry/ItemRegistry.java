@@ -4,6 +4,7 @@ import destiny.penumbra_phantasm.PenumbraPhantasm;
 import destiny.penumbra_phantasm.server.item.*;
 import net.minecraft.core.Direction;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.registries.DeferredRegister;
@@ -44,7 +45,19 @@ public class ItemRegistry {
             () -> new SwordItem(Tiers.NETHERITE, 5, -2, basicItem()));
 
     public static final RegistryObject<Item> DARK_CANDY = ITEMS.register("dark_candy",
-            () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(4).saturationMod(0.5f).fast().alwaysEat().build())));
+            () -> new DarkWorldFoodItem(new Item.Properties()
+                .food(new FoodProperties.Builder().nutrition(4).saturationMod(0.5f).fast()
+                .effect(() -> new MobEffectInstance(EffectRegistry.IMAGINARY_FOOD_SICKNESS.get(), 6000, 1, false, false, false, null, null), 0.8f).build()))
+        );
+
+        /*this.effect = pEffect;
+      this.duration = pDuration;
+      this.amplifier = pAmplifier;
+      this.ambient = pAmbient;
+      this.visible = pVisible;
+      this.showIcon = pShowIcon;
+      this.hiddenEffect = pHiddenEffect;
+      this.factorData = pFactorData; */
 
     public static final RegistryObject<Item> FRIEND = ITEMS.register("friend",
             () -> new FriendItem(basicItem()));
